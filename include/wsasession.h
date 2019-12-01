@@ -14,7 +14,7 @@ public:
   ~WSASession();
 
 private:
-  WSAData data;
+  WSAData data_;
 };
 
 #endif //EASYTCPIP_WSASESSION_H

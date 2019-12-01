@@ -12,19 +12,19 @@
 
 static void runServer() {
   try {
-    WSASession Session;
-    UDPSocket Socket;
+    WSASession wsaSession;
+    UDPSocket socket;
     char buffer[100];
-    
-    Socket.Bind(100);
+  
+    socket.bind(100);
     while (true) {
       std::cout << "Waiting for packet..." << std::endl;
-      sockaddr_in add = Socket.RecvFrom(buffer, sizeof(buffer));
+      sockaddr_in add = socket.recvFrom(buffer, sizeof(buffer));
       
       std::string input(buffer);
       if (input == "stop" || input == "exit") break;
       std::reverse(std::begin(input), std::end(input));
-      Socket.SendTo(add, input.c_str(), input.size());
+      socket.sendTo(add, input.c_str(), input.size());
     }
   }
   catch (std::system_error &e) {

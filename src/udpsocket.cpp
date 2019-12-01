@@ -10,38 +10,38 @@
 #include <string>
 
 UDPSocket::UDPSocket() {
-  sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-  if (sock == INVALID_SOCKET)
+  socket_ = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  if (socket_ == INVALID_SOCKET)
     throw std::system_error(WSAGetLastError(), std::system_category(), "Error opening socket");
   
   DWORD read_timeout = 10;
-  setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&read_timeout), sizeof read_timeout);
+  ::setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&read_timeout), sizeof read_timeout);
 }
 
 UDPSocket::~UDPSocket() {
-  closesocket(sock);
+  ::closesocket(socket_);
 }
 
-void UDPSocket::SendTo(const std::string &address, unsigned short port, const char *buffer, int len, int flags) {
+void UDPSocket::sendTo(const std::string &address, unsigned short port, const char *buffer, int len, int flags) {
   sockaddr_in add;
   add.sin_family = AF_INET;
-  add.sin_addr.s_addr = inet_addr(address.c_str());
-  add.sin_port = htons(port);
-  int ret = sendto(sock, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
+  add.sin_addr.s_addr = ::inet_addr(address.c_str());
+  add.sin_port = ::htons(port);
+  int ret = ::sendto(socket_, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
   if (ret < 0)
     throw std::system_error(WSAGetLastError(), std::system_category(), "sendto failed");
 }
 
-void UDPSocket::SendTo(sockaddr_in &address, const char *buffer, int len, int flags) {
-  int ret = sendto(sock, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&address), sizeof(address));
+void UDPSocket::sendTo(sockaddr_in &address, const char *buffer, int len, int flags) {
+  int ret = ::sendto(socket_, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&address), sizeof(address));
   if (ret < 0)
     throw std::system_error(WSAGetLastError(), std::system_category(), "sendto failed");
 }
 
-sockaddr_in UDPSocket::RecvFrom(char *buffer, int len, int flags) {
+sockaddr_in UDPSocket::recvFrom(char *buffer, int len, int flags) {
   sockaddr_in from;
   int size = sizeof(from);
-  int ret = recvfrom(sock, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&from), &size);
+  int ret = ::recvfrom(socket_, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&from), &size);
   if (ret < 0)
     throw std::system_error(WSAGetLastError(), std::system_category(), "recvfrom failed");
   
@@ -50,13 +50,13 @@ sockaddr_in UDPSocket::RecvFrom(char *buffer, int len, int flags) {
   return from;
 }
 
-void UDPSocket::Bind(unsigned short port) {
+void UDPSocket::bind(unsigned short port) {
   sockaddr_in add;
   add.sin_family = AF_INET;
-  add.sin_addr.s_addr = htonl(INADDR_ANY);
-  add.sin_port = htons(port);
+  add.sin_addr.s_addr = ::htonl(INADDR_ANY);
+  add.sin_port = ::htons(port);
   
-  int ret = bind(sock, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
+  int ret = ::bind(socket_, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
   if (ret < 0)
-    throw std::system_error(WSAGetLastError(), std::system_category(), "Bind failed");
+    throw std::system_error(WSAGetLastError(), std::system_category(), "bind failed");
 }

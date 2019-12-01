@@ -15,16 +15,16 @@ public:
   
   ~UDPSocket();
   
-  void SendTo(const std::string &address, unsigned short port, const char *buffer, int len, int flags = 0);
+  void sendTo(const std::string &address, unsigned short port, const char *buffer, int len, int flags = 0);
   
-  void SendTo(sockaddr_in &address, const char *buffer, int len, int flags = 0);
+  void sendTo(sockaddr_in &address, const char *buffer, int len, int flags = 0);
   
-  sockaddr_in RecvFrom(char *buffer, int len, int flags = 0);
+  sockaddr_in recvFrom(char *buffer, int len, int flags = 0);
   
-  void Bind(unsigned short port);
+  void bind(unsigned short port);
 
 private:
-  SOCKET sock;
+  SOCKET socket_;
 };
 
 #endif //EASYTCPIP_UDPSOCKET_H
