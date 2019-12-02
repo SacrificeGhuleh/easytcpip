@@ -1,10 +1,7 @@
 //
 // Created by zvone on 01-Dec-19.
 //
-
-
 #include <udpsocket.h>
-#include <wsasession.h>
 
 #include <exception>
 #include <iostream>
@@ -15,12 +12,12 @@ static void runClient() {
     std::string c;
     std::cin >> c;
     try {
-      WSASession session;
+      //WSASession session;
       UDPSocket socket;
       char buffer[100];
-      
-      socket.sendTo("127.0.0.1", 100, c.c_str(), c.size());
-      socket.recvFrom(buffer, 100);
+  
+      socket.sendto("127.0.0.1", 100, c.c_str(), c.size());
+      socket.recvfrom(buffer, 100);
       std::cout << buffer << std::endl;
     }
     catch (std::exception &ex) {

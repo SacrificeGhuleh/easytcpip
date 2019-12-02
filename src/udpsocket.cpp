@@ -1,15 +1,15 @@
 //
 // Created by zvone on 01-Dec-19.
 //
-
 #include <udpsocket.h>
-
 
 #include <winsock2.h>
 #include <system_error>
 #include <string>
+#include "wsasession.h"
 
 UDPSocket::UDPSocket() {
+  session_ = std::make_unique<WSASession>();
   socket_ = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (socket_ == INVALID_SOCKET)
     throw std::system_error(WSAGetLastError(), std::system_category(), "Error opening socket");
@@ -22,7 +22,7 @@ UDPSocket::~UDPSocket() {
   ::closesocket(socket_);
 }
 
-void UDPSocket::sendTo(const std::string &address, unsigned short port, const char *buffer, int len, int flags) {
+void UDPSocket::sendto(const std::string &address, unsigned short port, const char *buffer, int len, int flags) {
   sockaddr_in add;
   add.sin_family = AF_INET;
   add.sin_addr.s_addr = ::inet_addr(address.c_str());
@@ -32,13 +32,13 @@ void UDPSocket::sendTo(const std::string &address, unsigned short port, const ch
     throw std::system_error(WSAGetLastError(), std::system_category(), "sendto failed");
 }
 
-void UDPSocket::sendTo(sockaddr_in &address, const char *buffer, int len, int flags) {
+void UDPSocket::sendto(sockaddr_in &address, const char *buffer, int len, int flags) {
   int ret = ::sendto(socket_, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&address), sizeof(address));
   if (ret < 0)
     throw std::system_error(WSAGetLastError(), std::system_category(), "sendto failed");
 }
 
-sockaddr_in UDPSocket::recvFrom(char *buffer, int len, int flags) {
+sockaddr_in UDPSocket::recvfrom(char *buffer, int len, int flags) {
   sockaddr_in from;
   int size = sizeof(from);
   int ret = ::recvfrom(socket_, buffer, len, flags, reinterpret_cast<SOCKADDR *>(&from), &size);

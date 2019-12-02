@@ -4,33 +4,31 @@ project(easytcpip)
 set(CMAKE_CXX_STANDARD 14)
 
 
-set(SOURCE_DIR src)
-set(HEADER_DIR include)
-set(EXAMPLE_DIR examples)
+set(EASYTCPIP_SOURCE_DIR src)
+set(EASYTCPIP_HEADER_DIR include)
+set(EASYTCPIP_EXAMPLE_DIR examples)
 
-set(HEADER_FILES
-    ${HEADER_DIR}/network.h
-    ${HEADER_DIR}/udpsocket.h
-    ${HEADER_DIR}/wsasession.h
+set(EASYTCPIP_HEADER_FILES
+    ${EASYTCPIP_HEADER_DIR}/udpsocket.h
+    ${EASYTCPIP_HEADER_DIR}/wsasession.h
     )
 
-set(SOURCE_FILES
-    ${SOURCE_DIR}/network.cpp
-    ${SOURCE_DIR}/udpsocket.cpp
-    ${SOURCE_DIR}/wsasession.cpp
+set(EASYTCPIP_SOURCE_FILES
+    ${EASYTCPIP_SOURCE_DIR}/udpsocket.cpp
+    ${EASYTCPIP_SOURCE_DIR}/wsasession.cpp
     )
 
-set(EXAMPLE_FILES
-    ${EXAMPLE_DIR}/udpclient.cpp
-    ${EXAMPLE_DIR}/udpserver.cpp
+set(EASYTCPIP_EXAMPLE_FILES
+    ${EASYTCPIP_EXAMPLE_DIR}/udpclient.cpp
+    ${EASYTCPIP_EXAMPLE_DIR}/udpserver.cpp
     )
 
-include_directories(${HEADER_DIR})
+include_directories(${EASYTCPIP_HEADER_DIR})
 
-add_executable(UdpClientExample ${HEADER_FILES} ${SOURCE_FILES} ${EXAMPLE_DIR}/udpclient.cpp)
-add_executable(UdpServerExample ${HEADER_FILES} ${SOURCE_FILES} ${EXAMPLE_DIR}/udpserver.cpp)
+add_executable(UdpClientExample ${EASYTCPIP_HEADER_FILES} ${EASYTCPIP_SOURCE_FILES} ${EASYTCPIP_EXAMPLE_DIR}/udpclient.cpp)
+add_executable(UdpServerExample ${EASYTCPIP_HEADER_FILES} ${EASYTCPIP_SOURCE_FILES} ${EASYTCPIP_EXAMPLE_DIR}/udpserver.cpp)
 
-add_executable(easytcpip ${HEADER_FILES} ${SOURCE_FILES} main.cpp)
+add_library(${PROJECT_NAME} ${EASYTCPIP_HEADER_FILES} ${EASYTCPIP_SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} -lwsock32)
 target_link_libraries(UdpClientExample -lwsock32)
