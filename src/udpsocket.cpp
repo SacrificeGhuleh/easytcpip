@@ -50,7 +50,7 @@ sockaddr_in UDPSocket::recvfrom(char *buffer, int len, int flags) {
   return from;
 }
 
-void UDPSocket::bind(unsigned short port) {
+sockaddr_in UDPSocket::bind(unsigned short port) {
   sockaddr_in add;
   add.sin_family = AF_INET;
   add.sin_addr.s_addr = ::htonl(INADDR_ANY);
@@ -59,4 +59,11 @@ void UDPSocket::bind(unsigned short port) {
   int ret = ::bind(socket_, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
   if (ret < 0)
     throw std::system_error(WSAGetLastError(), std::system_category(), "bind failed");
+  return add;
+}
+
+
+void UDPSocket::setSendToBroadcast(bool val ){
+  char broadcast = val;
+  ::setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
 }

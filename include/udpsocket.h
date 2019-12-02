@@ -22,7 +22,9 @@ public:
   
   sockaddr_in recvfrom(char *buffer, int len, int flags = 0);
   
-  void bind(unsigned short port);
+  sockaddr_in bind(unsigned short port);
+  
+  void setSendToBroadcast(bool val = false);
 
 private:
   SOCKET socket_;
