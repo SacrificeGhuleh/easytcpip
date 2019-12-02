@@ -10,7 +10,6 @@ set(EASYTCPIP_EXAMPLE_DIR examples)
 
 set(EASYTCPIP_HEADER_FILES
     ${EASYTCPIP_HEADER_DIR}/udpsocket.h
-    ${EASYTCPIP_HEADER_DIR}/wsasession.h
     )
 
 set(EASYTCPIP_SOURCE_FILES
