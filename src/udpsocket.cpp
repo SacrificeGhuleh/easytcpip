@@ -14,7 +14,7 @@ UDPSocket::UDPSocket() {
   if (socket_ == INVALID_SOCKET)
     throw std::system_error(WSAGetLastError(), std::system_category(), "Error opening socket");
   
-  DWORD read_timeout = 10;
+  DWORD read_timeout = 1000;
   ::setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&read_timeout), sizeof read_timeout);
 }
 

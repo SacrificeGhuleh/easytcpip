@@ -12,7 +12,6 @@ static void runClient() {
     std::string c;
     std::cin >> c;
     try {
-      //WSASession session;
       UDPSocket socket;
       char buffer[100];
   
