@@ -13,9 +13,20 @@ static void runClient() {
     std::cin >> c;
     try {
       UDPSocket socket;
+      socket.setOptReadTimeout(5000);
       char buffer[100];
-  
+      
+      /*
+      sockaddr_in add;
+      add.sin_family = AF_INET;
+      add.sin_addr.s_addr = ::htonl(INADDR_BROADCAST);
+      add.sin_port = ::htons(100);*/
+
+
+//      socket.sendto(add, c.c_str(), c.size());
       socket.sendto("127.0.0.1", 100, c.c_str(), c.size());
+      if (c == "stop" || c == "exit") break;
+      
       socket.recvfrom(buffer, 100);
       std::cout << buffer << std::endl;
     }

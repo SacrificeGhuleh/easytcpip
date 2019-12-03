@@ -6,16 +6,16 @@
 #include <winsock2.h>
 #include <system_error>
 #include <string>
+#include <iostream>
 #include "wsasession.h"
 
 UDPSocket::UDPSocket() {
   session_ = std::make_unique<WSASession>();
   socket_ = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+  std::cout << "Socket create err: " << WSAGetLastError() << std::endl;
   if (socket_ == INVALID_SOCKET)
     throw std::system_error(WSAGetLastError(), std::system_category(), "Error opening socket");
   
-  DWORD read_timeout = 1000;
-  ::setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&read_timeout), sizeof read_timeout);
 }
 
 UDPSocket::~UDPSocket() {
@@ -57,13 +57,20 @@ sockaddr_in UDPSocket::bind(unsigned short port) {
   add.sin_port = ::htons(port);
   
   int ret = ::bind(socket_, reinterpret_cast<SOCKADDR *>(&add), sizeof(add));
-  if (ret < 0)
+  std::cout << "Bind err: " << WSAGetLastError() << std::endl;
+  if (ret < 0) {
     throw std::system_error(WSAGetLastError(), std::system_category(), "bind failed");
+  }
   return add;
 }
 
 
-void UDPSocket::setSendToBroadcast(bool val ){
-  char broadcast = val;
-  ::setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+void UDPSocket::setSendToBroadcast(bool val) {
+  ::setsockopt(socket_, SOL_SOCKET, SO_BROADCAST, reinterpret_cast<const char *>(&val), sizeof val);
+}
+
+
+void UDPSocket::setOptReadTimeout(DWORD read_timeout) {
+  ::setsockopt(socket_, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char *>(&read_timeout), sizeof read_timeout);
+  std::cout << "setsockopt err: " << WSAGetLastError() << std::endl;
 }

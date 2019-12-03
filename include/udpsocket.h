@@ -24,7 +24,9 @@ public:
   
   sockaddr_in bind(unsigned short port);
   
-  void setSendToBroadcast(bool val = false);
+  void setSendToBroadcast(bool val);
+  
+  void setOptReadTimeout(DWORD read_timeout);
 
 private:
   SOCKET socket_;
